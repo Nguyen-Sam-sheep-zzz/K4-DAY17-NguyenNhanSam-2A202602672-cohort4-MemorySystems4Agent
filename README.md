@@ -153,7 +153,42 @@ OPENAI_API_KEY=...
 
 ## Chạy benchmark và test
 
-Sau khi hoàn thiện `src/`, chạy từ root repo:
+Phần triển khai offline đã hoàn thiện. Demo terminal (dữ liệu giả lập, state tạm, không gọi API) và benchmark dữ liệu gốc:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\demo_agents.py
+.\.venv\Scripts\python.exe src\benchmark.py --output docs\PHAN_4_BENCHMARK.json
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+`LLM_MODE` mặc định `offline` cho hai agent. CLI benchmark luôn mặc định offline kể cả `.env` chọn live; `--mode live` mới gọi provider đã cấu hình. `force_offline=True` luôn giữ offline. Live dùng chat-model adapter với memory do hai class quản lý. Smoke test live đã pass qua gateway OpenAI-compatible DevQuota (`OPENAI_BASE_URL=https://sv.devquote.shop/v1`) với model `gpt-6-luna`; bằng chứng nằm ở `docs/PHAN_5_LIVE.json`.
+
+### Giao diện web tiếng Việt
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-ui.txt
+.\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
+```
+
+Mở http://127.0.0.1:8501 để so sánh hai agent, mở chat mới, tạo lại agent, xem hồ sơ/compact và chạy benchmark độc lập. Offline mặc định; chọn Live chỉ gọi khi gửi câu hỏi. Credentials lấy từ .env/process, không hiển thị key. Mỗi browser session và chế độ có state demo riêng.
+
+Máy mới cần `requirements-live.txt` để dùng SDK live. Kiểm chứng live nhỏ bằng dữ liệu giả lập:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\check_live.py --output docs\PHAN_5_LIVE.json
+```
+
+[Báo cáo phần 5](docs/PHAN_5_BAO_CAO.md) có ảnh giao diện, kết quả live và lưu ý environment ưu tiên hơn `.env`. Bản hiện tại là demo local, chưa có đăng nhập cho public deployment.
+
+Benchmark dùng state tạm riêng cho mỗi suite/agent, hỏi recall ngay sau hội thoại tương ứng trong thread mới. Tokens gồm training + recall và là ước lượng heuristic. Response quality là độ phủ `expected_contains` trên câu recall, chưa có LLM judge. Đọc [báo cáo và số liệu phần 4](docs/PHAN_4_BAO_CAO.md) hoặc [hướng dẫn học/demo](HUONG_DAN_HOC_VA_DEMO_VI.md).
+
+Kết quả offline mặc định: Advanced recall 14/14 Standard và 3/3 Stress theo chuỗi; Standard prompt tăng 34,85%, Stress prompt giảm 19,04% so với Baseline. Để thử nén sớm hơn và tái tạo số đo:
+
+```powershell
+.\.venv\Scripts\python.exe src\benchmark.py --compact-threshold 1200 --keep-messages 4 --output docs\PHAN_4_BENCHMARK_1200_4.json
+```
+
+Chạy từ root repo:
 
 ```bash
 python src/benchmark.py

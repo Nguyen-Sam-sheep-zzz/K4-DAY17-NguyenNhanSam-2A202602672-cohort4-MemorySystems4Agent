@@ -1,0 +1,43 @@
+{
+  "mode": "offline-memory-layer-only",
+  "estimator": "ceil(stripped characters / 4)",
+  "threshold_tokens": 1200,
+  "keep_messages": 4,
+  "suites": [
+    {
+      "dataset": "conversations.json",
+      "user_turns": 101,
+      "profile": {
+        "name": "DũngCT",
+        "interests": "Python, AI",
+        "favorite_drink": "cà phê sữa đá",
+        "location": "Huế",
+        "favorite_food": "mì Quảng",
+        "pet": "corgi tên Bơ",
+        "profession": "MLOps engineer",
+        "response_style": "ngắn gọn; có bullet; có ví dụ thực chiến"
+      },
+      "profile_bytes": 264,
+      "raw_context_tokens": 8270,
+      "compact_context_tokens": 8270,
+      "context_reduction_percent": 0.0,
+      "compactions": 0
+    },
+    {
+      "dataset": "advanced_long_context.json",
+      "user_turns": 16,
+      "profile": {
+        "name": "DũngCT Stress",
+        "profession": "MLOps engineer",
+        "interests": "Python, AI, MLOps",
+        "location": "Đà Nẵng",
+        "response_style": "ngắn gọn; 3 bullet; có ví dụ thực chiến"
+      },
+      "profile_bytes": 193,
+      "raw_context_tokens": 20527,
+      "compact_context_tokens": 13274,
+      "context_reduction_percent": 35.33,
+      "compactions": 3
+    }
+  ]
+}

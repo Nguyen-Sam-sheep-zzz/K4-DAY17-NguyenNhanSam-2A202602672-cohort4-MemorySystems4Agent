@@ -1,0 +1,17 @@
+{
+  "mode": "live",
+  "provider": "openai",
+  "model": "gpt-6-luna",
+  "state": "temporary",
+  "facts": "synthetic-demo",
+  "token_source": "heuristic",
+  "records": [],
+  "checks": {},
+  "status": "failed",
+  "error": {
+    "phase": "training",
+    "type": "OpenAIAuthenticationError",
+    "http_status": 401,
+    "code": "invalid_api_key"
+  }
+}

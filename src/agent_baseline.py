@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from agent_response import (
+    LIVE_SYSTEM_PROMPT, SYSTEM_PROMPT, bind_request, facts_from_messages, offline_response,
+    prompt_tokens, reply_payload, response_text,
+)
 from config import LabConfig, load_config
 from memory_store import estimate_tokens
 from model_provider import build_chat_model
@@ -16,60 +20,53 @@ class SessionState:
 
 
 class BaselineAgent:
-    """Student TODO: implement Agent A.
-
-    Requirements:
-    - Within-session memory only
-    - No persistent `User.md`
-    - Should forget long-term facts across new threads
-    """
+    """Full history per thread; no persistent profile and no compaction."""
 
     def __init__(self, config: LabConfig | None = None, force_offline: bool = False) -> None:
         self.config = config or load_config()
         self.force_offline = force_offline
         self.sessions: dict[str, SessionState] = {}
-
-        # TODO: optionally initialize a real LangChain/LangGraph agent when dependencies exist.
-        self.langchain_agent = None
+        self._thread_users: dict[str, str] = {}
+        self.langchain_agent = self._maybe_build_langchain_agent()
 
     def reply(self, user_id: str, thread_id: str, message: str) -> dict[str, Any]:
-        """Student TODO: return the agent response and token accounting.
-
-        Pseudocode:
-        - If a live agent exists, call the live path.
-        - Otherwise use a deterministic offline path.
-        """
-
-        raise NotImplementedError
+        bind_request(self._thread_users, user_id, thread_id, message)
+        if self.langchain_agent is None:
+            return self._reply_offline(thread_id, message)
+        return self._respond(thread_id, message, live=True)
 
     def token_usage(self, thread_id: str) -> int:
-        # TODO: return cumulative agent token count for one thread.
-        raise NotImplementedError
+        state = self.sessions.get(thread_id)
+        return state.token_usage if state else 0
 
     def prompt_token_usage(self, thread_id: str) -> int:
-        # TODO: estimate how much prompt context this baseline kept processing.
-        raise NotImplementedError
+        state = self.sessions.get(thread_id)
+        return state.prompt_tokens_processed if state else 0
 
     def compaction_count(self, thread_id: str) -> int:
-        # Baseline has no compact memory.
         return 0
 
     def _reply_offline(self, thread_id: str, message: str) -> dict[str, Any]:
-        """Student TODO: implement a simple offline behavior.
+        return self._respond(thread_id, message, live=False)
 
-        Suggested behavior:
-        - Store the new user message in the session
-        - Generate a short deterministic reply
-        - Update token counts
-        - Never remember facts across different thread ids
-        """
-
-        raise NotImplementedError
+    def _respond(self, thread_id: str, message: str, live: bool) -> dict[str, Any]:
+        state = self.sessions.setdefault(thread_id, SessionState())
+        state.messages.append({"role": "user", "content": message})
+        prompt = [{"role": "system", "content": LIVE_SYSTEM_PROMPT if live else SYSTEM_PROMPT}] + list(state.messages)
+        input_count = prompt_tokens(prompt)
+        if live:
+            response = response_text(self.langchain_agent.invoke(prompt))
+        else:
+            facts = facts_from_messages(state.messages)
+            response = offline_response(message, facts, state.messages)
+        output_count = estimate_tokens(response)
+        state.messages.append({"role": "assistant", "content": response})
+        state.token_usage += output_count
+        state.prompt_tokens_processed += input_count
+        return reply_payload(response, "live" if live else "offline", output_count, input_count, 0)
 
     def _maybe_build_langchain_agent(self):
-        """Student TODO: optionally wire `create_agent` + `InMemorySaver` here.
-
-        Use `build_chat_model(self.config.model)` so the baseline can run with any supported provider.
-        """
-
-        raise NotImplementedError
+        """Optional chat-model adapter; thread state is owned by this class."""
+        if self.force_offline or self.config.mode == "offline":
+            return None
+        return build_chat_model(self.config.model)

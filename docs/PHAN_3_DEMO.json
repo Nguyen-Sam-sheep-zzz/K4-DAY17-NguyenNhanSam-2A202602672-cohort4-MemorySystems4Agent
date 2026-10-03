@@ -1,0 +1,57 @@
+{
+  "mode": "offline",
+  "state": "temporary",
+  "facts": "synthetic-demo",
+  "cases": [
+    {
+      "step": "1. Nhớ trong cùng chat",
+      "user_id": "demo_sam",
+      "thread_id": "chat-1",
+      "question": "Mình tên gì và đang ở đâu?",
+      "answers": {
+        "Baseline": "Tên: Sâm.\nNơi ở hiện tại: Đà Nẵng.",
+        "Advanced": "Tên: Sâm.\nNơi ở hiện tại: Đà Nẵng."
+      }
+    },
+    {
+      "step": "2. Mở chat mới",
+      "user_id": "demo_sam",
+      "thread_id": "chat-2",
+      "question": "Mình tên gì và đang ở đâu?",
+      "answers": {
+        "Baseline": "Tên: chưa có thông tin trong memory.\nNơi ở hiện tại: chưa có thông tin trong memory.",
+        "Advanced": "Tên: Sâm.\nNơi ở hiện tại: Đà Nẵng."
+      }
+    },
+    {
+      "step": "3. Correction và chuyến đi tạm",
+      "user_id": "demo_sam",
+      "thread_id": "chat-2",
+      "question": "Mình đang ở đâu và làm nghề gì?",
+      "answers": {
+        "Baseline": "Nơi ở hiện tại: Huế.\nNghề nghiệp: MLOps engineer.",
+        "Advanced": "Nơi ở hiện tại: Huế.\nNghề nghiệp: MLOps engineer."
+      }
+    },
+    {
+      "step": "4. Tạo lại cả hai agent",
+      "user_id": "demo_sam",
+      "thread_id": "chat-3",
+      "question": "Nhắc lại tên, nơi ở và nghề nghiệp của mình.",
+      "answers": {
+        "Baseline": "Tên: chưa có thông tin trong memory.\nNơi ở hiện tại: chưa có thông tin trong memory.\nNghề nghiệp: chưa có thông tin trong memory.",
+        "Advanced": "Tên: Sâm.\nNơi ở hiện tại: Huế.\nNghề nghiệp: MLOps engineer."
+      }
+    },
+    {
+      "step": "5. Người dùng khác",
+      "user_id": "demo_hai",
+      "thread_id": "chat-hai",
+      "question": "Mình tên gì?",
+      "answers": {
+        "Baseline": "Tên: chưa có thông tin trong memory.",
+        "Advanced": "Tên: chưa có thông tin trong memory."
+      }
+    }
+  ]
+}

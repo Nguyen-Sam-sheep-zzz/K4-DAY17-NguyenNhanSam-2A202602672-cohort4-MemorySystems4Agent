@@ -1,0 +1,82 @@
+{
+  "mode": "live",
+  "provider": "openai",
+  "model": "gpt-6-luna",
+  "state": "temporary",
+  "facts": "synthetic-demo",
+  "token_source": "heuristic",
+  "records": [
+    {
+      "agent": "Baseline",
+      "phase": "training",
+      "message": "Mình tên Lan. Mình ở Huế. Ghi nhớ giúp mình, trả lời bằng một câu ngắn.",
+      "response": "Mình đã ghi nhớ: bạn tên Lan và ở Huế.",
+      "mode": "live",
+      "agent_tokens": 10,
+      "prompt_tokens": 135,
+      "compactions": 0,
+      "token_source": "heuristic"
+    },
+    {
+      "agent": "Advanced",
+      "phase": "training",
+      "message": "Mình tên Lan. Mình ở Huế. Ghi nhớ giúp mình, trả lời bằng một câu ngắn.",
+      "response": "Mình nhớ rồi, Lan ở Huế.",
+      "mode": "live",
+      "agent_tokens": 6,
+      "prompt_tokens": 153,
+      "compactions": 0,
+      "token_source": "heuristic"
+    },
+    {
+      "agent": "Baseline",
+      "phase": "recall_after_restart",
+      "message": "Mình tên gì và đang ở đâu? Trả lời ngắn gọn.",
+      "response": "Mình chưa biết tên bạn và bạn đang ở đâu.",
+      "mode": "live",
+      "agent_tokens": 11,
+      "prompt_tokens": 128,
+      "compactions": 0,
+      "token_source": "heuristic"
+    },
+    {
+      "agent": "Advanced",
+      "phase": "recall_after_restart",
+      "message": "Mình tên gì và đang ở đâu? Trả lời ngắn gọn.",
+      "response": "Bạn tên Lan, đang ở Huế.",
+      "mode": "live",
+      "agent_tokens": 6,
+      "prompt_tokens": 146,
+      "compactions": 0,
+      "token_source": "heuristic"
+    },
+    {
+      "agent": "Baseline",
+      "phase": "technical",
+      "message": "Giải thích short-term memory trong AI agent bằng một câu, có ví dụ.",
+      "response": "Short-term memory là bộ nhớ tạm giúp AI agent giữ thông tin trong cuộc hội thoại hoặc tác vụ hiện tại; ví dụ, nhớ bạn vừa yêu cầu tìm nhà hàng chay để dùng tiêu chí đó khi gợi ý địa điểm.",
+      "mode": "live",
+      "agent_tokens": 47,
+      "prompt_tokens": 134,
+      "compactions": 0,
+      "token_source": "heuristic"
+    },
+    {
+      "agent": "Advanced",
+      "phase": "technical",
+      "message": "Giải thích short-term memory trong AI agent bằng một câu, có ví dụ.",
+      "response": "**Short-term memory** trong AI agent là khả năng ghi nhớ thông tin tạm thời trong phiên tương tác hiện tại, ví dụ agent nhớ rằng bạn vừa nói “Tôi thích cà phê” để đề xuất cà phê ở tin nhắn tiếp theo.",
+      "mode": "live",
+      "agent_tokens": 50,
+      "prompt_tokens": 152,
+      "compactions": 0,
+      "token_source": "heuristic"
+    }
+  ],
+  "checks": {
+    "six_live_responses": true,
+    "baseline_has_no_profile_recall": true,
+    "advanced_recalls_after_restart": true
+  },
+  "status": "passed"
+}
